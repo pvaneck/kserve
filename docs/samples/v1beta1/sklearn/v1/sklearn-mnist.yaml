@@ -1,0 +1,10 @@
+apiVersion: "serving.kubeflow.org/v1beta1"
+kind: "InferenceService"
+metadata:
+  name: "example-sklearn-mnist-svm"
+spec:
+  predictor:
+    serviceAccountName: "wml-serving-example-models"
+    sklearn:
+      storageUri: "s3://wml-serving-example-models-public/sklearn/mnist-svm.joblib"
+      runtimeVersion: "0"
