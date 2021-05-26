@@ -186,3 +186,27 @@ rules:
   - get
   - patch
   - update
+- apiGroups:
+  - wmlserving.ai.ibm.com
+  resources:
+  - predictors
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch

@@ -100,3 +100,7 @@ func (c *CustomTransformer) IsMMS(config *InferenceServicesConfig) bool {
 	// TODO: figure out if custom transformer supports MMS
 	return false
 }
+
+func (c *CustomTransformer) GetRuntimeVersion() *string {
+	return nil
+}

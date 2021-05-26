@@ -97,3 +97,7 @@ func (c *CustomExplainer) IsMMS(config *InferenceServicesConfig) bool {
 	// TODO: dynamically figure out if custom explainer supports MMS
 	return false
 }
+
+func (s *CustomExplainer) GetRuntimeVersion() *string {
+	return nil
+}

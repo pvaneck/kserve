@@ -187,3 +187,7 @@ func (t *TorchServeSpec) getPredictorConfig(config *InferenceServicesConfig) *Pr
 		return config.Predictors.PyTorch.V2
 	}
 }
+
+func (t *TorchServeSpec) GetRuntimeVersion() *string {
+	return t.RuntimeVersion
+}

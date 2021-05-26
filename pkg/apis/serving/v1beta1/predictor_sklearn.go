@@ -203,3 +203,7 @@ func (k *SKLearnSpec) getPredictorConfig(config *InferenceServicesConfig) *Predi
 		return config.Predictors.SKlearn.V2
 	}
 }
+
+func (k *SKLearnSpec) GetRuntimeVersion() *string {
+	return k.RuntimeVersion
+}

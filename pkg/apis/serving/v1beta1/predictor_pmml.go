@@ -18,6 +18,7 @@ package v1beta1
 
 import (
 	"fmt"
+
 	"github.com/golang/protobuf/proto"
 	"github.com/kubeflow/kfserving/pkg/constants"
 	"github.com/kubeflow/kfserving/pkg/utils"
@@ -84,4 +85,8 @@ func (p *PMMLSpec) IsMMS(config *InferenceServicesConfig) bool {
 func (p *PMMLSpec) IsFrameworkSupported(framework string, config *InferenceServicesConfig) bool {
 	supportedFrameworks := config.Predictors.PMML.SupportedFrameworks
 	return isFrameworkIncluded(supportedFrameworks, framework)
+}
+
+func (p *PMMLSpec) GetRuntimeVersion() *string {
+	return p.RuntimeVersion
 }

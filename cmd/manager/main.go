@@ -30,7 +30,9 @@ import (
 	istio_networking "istio.io/api/networking/v1alpha3"
 	"istio.io/client-go/pkg/apis/networking/v1alpha3"
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/kubernetes"
 	typedcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
@@ -80,6 +82,13 @@ func main() {
 	}
 
 	log.Info("Registering Components.")
+
+	gvk := schema.GroupVersionKind{
+		Group:   "apiextensions.k8s.io",
+		Version: "v1",
+		Kind:    "",
+	}
+	mgr.GetScheme().AddKnownTypeWithName(gvk, &unstructured.Unstructured{})
 
 	log.Info("Setting up KFServing v1alpha1 scheme")
 	if err := v1alpha1.AddToScheme(mgr.GetScheme()); err != nil {

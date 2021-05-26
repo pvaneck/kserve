@@ -94,3 +94,7 @@ func (x *LightGBMSpec) IsFrameworkSupported(framework string, config *InferenceS
 	supportedFrameworks := config.Predictors.LightGBM.SupportedFrameworks
 	return isFrameworkIncluded(supportedFrameworks, framework)
 }
+
+func (x *LightGBMSpec) GetRuntimeVersion() *string {
+	return x.RuntimeVersion
+}

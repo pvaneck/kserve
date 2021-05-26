@@ -118,3 +118,7 @@ func (s *ARTExplainerSpec) GetProtocol() constants.InferenceServiceProtocol {
 func (s *ARTExplainerSpec) IsMMS(config *InferenceServicesConfig) bool {
 	return false
 }
+
+func (s *ARTExplainerSpec) GetRuntimeVersion() *string {
+	return s.RuntimeVersion
+}

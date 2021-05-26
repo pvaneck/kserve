@@ -34,7 +34,10 @@ import (
 	apierr "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/dynamic"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
 	"knative.dev/pkg/apis"
 	knservingv1 "knative.dev/serving/pkg/apis/serving/v1"
@@ -67,7 +70,7 @@ type InferenceServiceReconciler struct {
 
 func (r *InferenceServiceReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
-
+	fmt.Println("Testing paul controller.................")
 	// Fetch the InferenceService instance
 	isvc := &v1beta1api.InferenceService{}
 	if err := r.Get(ctx, req.NamespacedName, isvc); err != nil {
@@ -219,5 +222,28 @@ func (r *InferenceServiceReconciler) deleteExternalResources(isvc *v1beta1api.In
 			r.Log.Error(err, "unable to delete trainedmodel", "trainedmodel", v)
 		}
 	}
+
+	// Delete WML predictor.
+	r.Log.Info("Deleting WML predictor", "Delete WML predictor", isvc.Name)
+	config, err := rest.InClusterConfig()
+	if err != nil {
+		r.Log.Info("Config not loaded")
+	}
+
+	dynClient, err := dynamic.NewForConfig(config)
+	if err != nil {
+		r.Log.Info("Dynamic client not loaded")
+	}
+
+	gvr := schema.GroupVersionResource{
+		Group:    "wmlserving.ai.ibm.com",
+		Version:  "v1",
+		Resource: "predictors",
+	}
+	policy := metav1.DeletePropagationBackground
+	if err := dynClient.Resource(gvr).Namespace(isvc.Namespace).Delete(context.TODO(), isvc.Name, metav1.DeleteOptions{PropagationPolicy: &policy}); client.IgnoreNotFound(err) != nil {
+		r.Log.Error(err, "unable to delete WML predictor", "predictor", isvc.Name)
+	}
+
 	return nil
 }

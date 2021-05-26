@@ -121,3 +121,7 @@ func (t *TFServingSpec) IsFrameworkSupported(framework string, config *Inference
 	supportedFrameworks := config.Predictors.Tensorflow.SupportedFrameworks
 	return isFrameworkIncluded(supportedFrameworks, framework)
 }
+
+func (t *TFServingSpec) GetRuntimeVersion() *string {
+	return t.RuntimeVersion
+}

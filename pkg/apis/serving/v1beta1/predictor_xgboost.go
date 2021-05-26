@@ -208,3 +208,7 @@ func (x *XGBoostSpec) getPredictorConfig(config *InferenceServicesConfig) *Predi
 		return config.Predictors.XGBoost.V2
 	}
 }
+
+func (x *XGBoostSpec) GetRuntimeVersion() *string {
+	return x.RuntimeVersion
+}

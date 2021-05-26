@@ -100,3 +100,7 @@ func (t *TritonSpec) IsFrameworkSupported(framework string, config *InferenceSer
 	supportedFrameworks := config.Predictors.Triton.SupportedFrameworks
 	return isFrameworkIncluded(supportedFrameworks, framework)
 }
+
+func (t *TritonSpec) GetRuntimeVersion() *string {
+	return t.RuntimeVersion
+}

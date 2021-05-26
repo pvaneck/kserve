@@ -120,3 +120,7 @@ func (s *AIXExplainerSpec) GetProtocol() constants.InferenceServiceProtocol {
 func (s *AIXExplainerSpec) IsMMS(config *InferenceServicesConfig) bool {
 	return false
 }
+
+func (s *AIXExplainerSpec) GetRuntimeVersion() *string {
+	return s.RuntimeVersion
+}

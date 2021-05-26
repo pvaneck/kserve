@@ -137,3 +137,7 @@ func (s *AlibiExplainerSpec) GetProtocol() constants.InferenceServiceProtocol {
 func (s *AlibiExplainerSpec) IsMMS(config *InferenceServicesConfig) bool {
 	return false
 }
+
+func (s *AlibiExplainerSpec) GetRuntimeVersion() *string {
+	return s.RuntimeVersion
+}

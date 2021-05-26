@@ -107,3 +107,7 @@ func (o *ONNXRuntimeSpec) IsFrameworkSupported(framework string, config *Inferen
 	supportedFrameworks := config.Predictors.ONNX.SupportedFrameworks
 	return isFrameworkIncluded(supportedFrameworks, framework)
 }
+
+func (o *ONNXRuntimeSpec) GetRuntimeVersion() *string {
+	return o.RuntimeVersion
+}

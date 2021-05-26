@@ -18,11 +18,12 @@ package v1beta1
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/kubeflow/kfserving/pkg/constants"
 	"github.com/kubeflow/kfserving/pkg/utils"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"strings"
 )
 
 // CustomPredictor defines arguments for configuring a custom server.
@@ -107,4 +108,8 @@ func (c *CustomPredictor) IsMMS(config *InferenceServicesConfig) bool {
 func (c *CustomPredictor) IsFrameworkSupported(framework string, config *InferenceServicesConfig) bool {
 	//TODO: Figure out how to check if custom predictor is supports framework
 	return true
+}
+
+func (c *CustomPredictor) GetRuntimeVersion() *string {
+	return nil
 }
