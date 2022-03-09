@@ -13738,6 +13738,65 @@ spec:
                   - type
                   type: object
                 type: array
+              modelStatus:
+                properties:
+                  activeModelState:
+                    default: Pending
+                    enum:
+                    - ""
+                    - Pending
+                    - Standby
+                    - Loading
+                    - Loaded
+                    - FailedToLoad
+                    type: string
+                  failedCopies:
+                    default: 0
+                    type: integer
+                  lastFailureInfo:
+                    properties:
+                      location:
+                        type: string
+                      message:
+                        type: string
+                      modelId:
+                        type: string
+                      reason:
+                        enum:
+                        - ModelLoadFailed
+                        - RuntimeUnhealthy
+                        - NoSupportingRuntime
+                        - RuntimeNotRecognized
+                        - InvalidPredictorSpec
+                        type: string
+                      time:
+                        format: date-time
+                        type: string
+                    type: object
+                  targetModelState:
+                    default: ""
+                    enum:
+                    - ""
+                    - Pending
+                    - Standby
+                    - Loading
+                    - Loaded
+                    - FailedToLoad
+                    type: string
+                  transitionStatus:
+                    default: UpToDate
+                    enum:
+                    - UpToDate
+                    - InProgress
+                    - BlockedByFailedLoad
+                    - InvalidSpec
+                    type: string
+                required:
+                - activeModelState
+                - failedCopies
+                - targetModelState
+                - transitionStatus
+                type: object
               observedGeneration:
                 format: int64
                 type: integer

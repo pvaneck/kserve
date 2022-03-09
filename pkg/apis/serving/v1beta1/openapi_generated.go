@@ -59,6 +59,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"./pkg/apis/serving/v1beta1.ExplainerExtensionSpec":     schema_pkg_apis_serving_v1beta1_ExplainerExtensionSpec(ref),
 		"./pkg/apis/serving/v1beta1.ExplainerSpec":              schema_pkg_apis_serving_v1beta1_ExplainerSpec(ref),
 		"./pkg/apis/serving/v1beta1.ExplainersConfig":           schema_pkg_apis_serving_v1beta1_ExplainersConfig(ref),
+		"./pkg/apis/serving/v1beta1.FailureInfo":                schema_pkg_apis_serving_v1beta1_FailureInfo(ref),
 		"./pkg/apis/serving/v1beta1.InferenceService":           schema_pkg_apis_serving_v1beta1_InferenceService(ref),
 		"./pkg/apis/serving/v1beta1.InferenceServiceList":       schema_pkg_apis_serving_v1beta1_InferenceServiceList(ref),
 		"./pkg/apis/serving/v1beta1.InferenceServiceSpec":       schema_pkg_apis_serving_v1beta1_InferenceServiceSpec(ref),
@@ -69,6 +70,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"./pkg/apis/serving/v1beta1.LoggerSpec":                 schema_pkg_apis_serving_v1beta1_LoggerSpec(ref),
 		"./pkg/apis/serving/v1beta1.ModelFormat":                schema_pkg_apis_serving_v1beta1_ModelFormat(ref),
 		"./pkg/apis/serving/v1beta1.ModelSpec":                  schema_pkg_apis_serving_v1beta1_ModelSpec(ref),
+		"./pkg/apis/serving/v1beta1.ModelStatus":                schema_pkg_apis_serving_v1beta1_ModelStatus(ref),
 		"./pkg/apis/serving/v1beta1.ONNXRuntimeSpec":            schema_pkg_apis_serving_v1beta1_ONNXRuntimeSpec(ref),
 		"./pkg/apis/serving/v1beta1.PMMLSpec":                   schema_pkg_apis_serving_v1beta1_PMMLSpec(ref),
 		"./pkg/apis/serving/v1beta1.PaddleServerSpec":           schema_pkg_apis_serving_v1beta1_PaddleServerSpec(ref),
@@ -3879,6 +3881,54 @@ func schema_pkg_apis_serving_v1beta1_ExplainersConfig(ref common.ReferenceCallba
 	}
 }
 
+func schema_pkg_apis_serving_v1beta1_FailureInfo(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"location": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Name of component to which the failure relates (usually Pod name)",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"reason": {
+						SchemaProps: spec.SchemaProps{
+							Description: "High level class of failure",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"message": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Detailed error message",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"modelId": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Internal ID of model, tied to specific Spec contents",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"time": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Time failure occurred or was discovered",
+							Ref:         ref("k8s.io/apimachinery/pkg/apis/meta/v1.Time"),
+						},
+					},
+				},
+			},
+		},
+		Dependencies: []string{
+			"k8s.io/apimachinery/pkg/apis/meta/v1.Time"},
+	}
+}
+
 func schema_pkg_apis_serving_v1beta1_InferenceService(ref common.ReferenceCallback) common.OpenAPIDefinition {
 	return common.OpenAPIDefinition{
 		Schema: spec.Schema{
@@ -4092,11 +4142,18 @@ func schema_pkg_apis_serving_v1beta1_InferenceServiceStatus(ref common.Reference
 							},
 						},
 					},
+					"modelStatus": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Model related statuses",
+							Default:     map[string]interface{}{},
+							Ref:         ref("./pkg/apis/serving/v1beta1.ModelStatus"),
+						},
+					},
 				},
 			},
 		},
 		Dependencies: []string{
-			"./pkg/apis/serving/v1beta1.ComponentStatusSpec", "knative.dev/pkg/apis.Condition", "knative.dev/pkg/apis.URL", "knative.dev/pkg/apis/duck/v1.Addressable"},
+			"./pkg/apis/serving/v1beta1.ComponentStatusSpec", "./pkg/apis/serving/v1beta1.ModelStatus", "knative.dev/pkg/apis.Condition", "knative.dev/pkg/apis.URL", "knative.dev/pkg/apis/duck/v1.Addressable"},
 	}
 }
 
@@ -4789,6 +4846,58 @@ func schema_pkg_apis_serving_v1beta1_ModelSpec(ref common.ReferenceCallback) com
 		},
 		Dependencies: []string{
 			"./pkg/apis/serving/v1beta1.ModelFormat", "./pkg/apis/serving/v1beta1.StorageSpec", "k8s.io/api/core/v1.ContainerPort", "k8s.io/api/core/v1.EnvFromSource", "k8s.io/api/core/v1.EnvVar", "k8s.io/api/core/v1.Lifecycle", "k8s.io/api/core/v1.Probe", "k8s.io/api/core/v1.ResourceRequirements", "k8s.io/api/core/v1.SecurityContext", "k8s.io/api/core/v1.VolumeDevice", "k8s.io/api/core/v1.VolumeMount"},
+	}
+}
+
+func schema_pkg_apis_serving_v1beta1_ModelStatus(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"transitionStatus": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Whether the available predictor endpoint reflects the current Spec or is in transition",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"activeModelState": {
+						SchemaProps: spec.SchemaProps{
+							Description: "High level state string: Pending, Standby, Loading, Loaded, FailedToLoad",
+							Default:     "",
+							Type:        []string{"string"},
+							Format:      "",
+						},
+					},
+					"targetModelState": {
+						SchemaProps: spec.SchemaProps{
+							Default: "",
+							Type:    []string{"string"},
+							Format:  "",
+						},
+					},
+					"lastFailureInfo": {
+						SchemaProps: spec.SchemaProps{
+							Description: "Details of last failure, when load of target model is failed or blocked",
+							Ref:         ref("./pkg/apis/serving/v1beta1.FailureInfo"),
+						},
+					},
+					"failedCopies": {
+						SchemaProps: spec.SchemaProps{
+							Description: "How many copies of this predictor's models failed to load recently",
+							Default:     0,
+							Type:        []string{"integer"},
+							Format:      "int32",
+						},
+					},
+				},
+				Required: []string{"transitionStatus", "activeModelState", "targetModelState", "failedCopies"},
+			},
+		},
+		Dependencies: []string{
+			"./pkg/apis/serving/v1beta1.FailureInfo"},
 	}
 }
 

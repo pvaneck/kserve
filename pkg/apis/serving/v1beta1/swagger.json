@@ -2139,6 +2139,31 @@
         }
       }
     },
+    "v1beta1.FailureInfo": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "description": "Name of component to which the failure relates (usually Pod name)",
+          "type": "string"
+        },
+        "message": {
+          "description": "Detailed error message",
+          "type": "string"
+        },
+        "modelId": {
+          "description": "Internal ID of model, tied to specific Spec contents",
+          "type": "string"
+        },
+        "reason": {
+          "description": "High level class of failure",
+          "type": "string"
+        },
+        "time": {
+          "description": "Time failure occurred or was discovered",
+          "$ref": "#/definitions/v1.Time"
+        }
+      }
+    },
     "v1beta1.InferenceService": {
       "description": "InferenceService is the Schema for the InferenceServices API",
       "type": "object",
@@ -2249,6 +2274,11 @@
           },
           "x-kubernetes-patch-merge-key": "type",
           "x-kubernetes-patch-strategy": "merge"
+        },
+        "modelStatus": {
+          "description": "Model related statuses",
+          "default": {},
+          "$ref": "#/definitions/v1beta1.ModelStatus"
         },
         "observedGeneration": {
           "description": "ObservedGeneration is the 'Generation' of the Service that was last processed by the controller.",
@@ -2648,6 +2678,41 @@
         "workingDir": {
           "description": "Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image. Cannot be updated.",
           "type": "string"
+        }
+      }
+    },
+    "v1beta1.ModelStatus": {
+      "type": "object",
+      "required": [
+        "transitionStatus",
+        "activeModelState",
+        "targetModelState",
+        "failedCopies"
+      ],
+      "properties": {
+        "activeModelState": {
+          "description": "High level state string: Pending, Standby, Loading, Loaded, FailedToLoad",
+          "type": "string",
+          "default": ""
+        },
+        "failedCopies": {
+          "description": "How many copies of this predictor's models failed to load recently",
+          "type": "integer",
+          "format": "int32",
+          "default": 0
+        },
+        "lastFailureInfo": {
+          "description": "Details of last failure, when load of target model is failed or blocked",
+          "$ref": "#/definitions/v1beta1.FailureInfo"
+        },
+        "targetModelState": {
+          "type": "string",
+          "default": ""
+        },
+        "transitionStatus": {
+          "description": "Whether the available predictor endpoint reflects the current Spec or is in transition",
+          "type": "string",
+          "default": ""
         }
       }
     },
