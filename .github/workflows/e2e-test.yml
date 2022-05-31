@@ -39,6 +39,7 @@ jobs:
           kubectl get pods -n istio-system
           kubectl describe svc -n istio-system istio-ingressgateway
           kubectl get pods -n knative-serving
+          kubectl get configmap -n knative-serving config-deployment -oyaml
           kubectl get pods -n cert-manager
       - name: Build KServe images
         run: |
@@ -50,6 +51,7 @@ jobs:
           ./test/scripts/gh-actions/setup-kserve.sh
 
           kubectl get pods -n kserve
+          kubectl describe pods -n kserve
       - name: Run E2E tests
         timeout-minutes: 90
         run: |
